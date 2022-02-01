@@ -32,6 +32,9 @@ export const getVaccines = async () => {
 		`[Vaccini]: Screenshot saved to ${path}!`,
 		true
 	);
+
+	await context.close();
+	await browser.close();
 };
 
 export default getVaccines;
