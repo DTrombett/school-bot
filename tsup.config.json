@@ -1,0 +1,19 @@
+{
+	"clean": true,
+	"entry": [
+		"src/commands/**/*.ts",
+		"src/events/**/*.ts",
+		"src/index.ts",
+		"src/registerCommands.ts"
+	],
+	"format": [
+		"esm"
+	],
+	"minify": true,
+	"minifyIdentifiers": true,
+	"minifySyntax": true,
+	"minifyWhitespace": true,
+	"platform": "node",
+	"sourcemap": true,
+	"target": "ESNext"
+}
