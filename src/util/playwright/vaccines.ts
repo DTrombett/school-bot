@@ -1,15 +1,14 @@
 import type { PageScreenshotOptions } from "playwright";
 import { chromium, devices } from "playwright";
 import CustomClient from "../CustomClient";
+import buffers from "./buffers";
 
-const path = `./tmp/vaccini.jpg`;
 const URL = "https://www.governo.it/it/cscovid19/report-vaccini";
 const viewport = { width: 1024, height: 520 };
 
 const screenshotOptions: PageScreenshotOptions = {
 	clip: { x: 0, y: 0, width: viewport.width, height: 1900 },
 	fullPage: true,
-	path,
 	quality: 100,
 	type: "jpeg",
 };
@@ -17,7 +16,7 @@ const screenshotOptions: PageScreenshotOptions = {
 /**
  * Screenshot the vaccines page and save it to the given path.
  */
-export const vaccines = async () => {
+export const loadVaccinesData = async () => {
 	const browser = await chromium.launch();
 	const context = await browser.newContext({
 		...devices["Desktop Chrome"],
@@ -27,13 +26,10 @@ export const vaccines = async () => {
 
 	await page.goto(URL);
 	await page.waitForSelector("#loader-custom", { state: "hidden" });
-	await page.screenshot(screenshotOptions);
-	void CustomClient.printToStdout(
-		`[Vaccini]: Screenshot saved to ${path}!`,
-		true
-	);
+	buffers.set("vaccines", await page.screenshot(screenshotOptions));
+	void CustomClient.printToStdout(`[Vaccini]: Screenshot saved!`, true);
 
 	await browser.close();
 };
 
-export default vaccines;
+export default loadVaccinesData;

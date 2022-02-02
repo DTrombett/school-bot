@@ -8,7 +8,7 @@ import type Event from "./Event";
 import loadCommands from "./loadCommands";
 import loadEvents from "./loadEvents";
 import occurrences from "./occurrences";
-import { covid, vaccines } from "./playwright";
+import { loadCovidData, loadVaccinesData } from "./playwright";
 import { EventType } from "./types";
 
 /**
@@ -157,7 +157,9 @@ export class CustomClient<T extends boolean = boolean> extends Client<T> {
 			loadCommands(this),
 			...Object.values(EventType).map((type) => loadEvents(this, type)),
 		]);
-		Promise.all([vaccines(), covid()]).catch(CustomClient.printToStderr);
+		Promise.all([loadVaccinesData(), loadCovidData()]).catch(
+			CustomClient.printToStderr
+		);
 
 		return super.login();
 	}
