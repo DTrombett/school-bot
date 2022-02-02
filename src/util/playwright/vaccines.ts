@@ -1,6 +1,6 @@
 import type { PageScreenshotOptions } from "playwright";
 import { chromium, devices } from "playwright";
-import CustomClient from "./CustomClient";
+import CustomClient from "../CustomClient";
 
 const path = `./tmp/vaccini.jpg`;
 const URL = "https://www.governo.it/it/cscovid19/report-vaccini";
@@ -17,7 +17,7 @@ const screenshotOptions: PageScreenshotOptions = {
 /**
  * Screenshot the vaccines page and save it to the given path.
  */
-export const getVaccines = async () => {
+export const vaccines = async () => {
 	const browser = await chromium.launch();
 	const context = await browser.newContext({
 		...devices["Desktop Chrome"],
@@ -33,8 +33,7 @@ export const getVaccines = async () => {
 		true
 	);
 
-	await context.close();
 	await browser.close();
 };
 
-export default getVaccines;
+export default vaccines;

@@ -42,7 +42,9 @@ const APICommands = (await rest.put(
 await rest.put(
 	Routes.guildApplicationCommandsPermissions(applicationId!, guildId!),
 	{
-		body: APICommands.map<APIGuildApplicationCommandPermissions>((command) => ({
+		body: APICommands.filter(
+			(c) => commands.find((co) => co.data.name === c.name)?.isPublic !== true
+		).map<APIGuildApplicationCommandPermissions>((command) => ({
 			application_id: applicationId!,
 			guild_id: guildId!,
 			id: command.id,

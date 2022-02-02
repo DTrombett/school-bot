@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import { start } from "node:repl";
-import Constants, { CustomClient, startJob } from "./util";
+import Constants, { covid, createJob, CustomClient, vaccines } from "./util";
 
 await CustomClient.logToFile("\n");
 config({ debug: true });
@@ -14,5 +14,6 @@ const client = new CustomClient();
 ).client = client;
 
 await client.login();
-startJob(client);
+createJob(vaccines, "0 7 * * *");
+createJob(covid, "0 18 * * *");
 start();

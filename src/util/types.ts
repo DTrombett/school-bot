@@ -37,6 +37,11 @@ export type CommandOptions = {
 		| SlashCommandSubcommandsOnlyBuilder;
 
 	/**
+	 * If this command is public
+	 */
+	isPublic?: boolean;
+
+	/**
 	 * A functions to run when an autocomplete request is received by Discord.
 	 * @param this - The command object that called this
 	 * @param interaction - The interaction received

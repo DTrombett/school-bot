@@ -16,6 +16,7 @@ export * from "./loadCommands";
 export * from "./loadEvents";
 export * from "./matchStrings";
 export * from "./occurrences";
+export * from "./playwright";
 export * from "./restart";
 export * from "./startJob";
 export * from "./toLocaleString";

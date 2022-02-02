@@ -22,6 +22,11 @@ export class Command {
 	data!: CommandOptions["data"];
 
 	/**
+	 * If this command is public
+	 */
+	isPublic = false;
+
+	/**
 	 * The function to handle the autocomplete of this command
 	 */
 	private _autocomplete: OmitThisParameter<CommandOptions["autocomplete"]>;
@@ -66,7 +71,7 @@ export class Command {
 	 */
 	async autocomplete(interaction: AutocompleteInteraction) {
 		try {
-			if (interaction.user.id === env.OWNER_ID)
+			if (this.isPublic || interaction.user.id === env.OWNER_ID)
 				await this._autocomplete?.(interaction);
 		} catch (message) {
 			void CustomClient.printToStderr(message, true);
@@ -81,6 +86,7 @@ export class Command {
 		if (options.data !== undefined) this.data = options.data;
 		if (options.autocomplete !== undefined)
 			this._autocomplete = options.autocomplete.bind(this);
+		if (options.isPublic !== undefined) this.isPublic = options.isPublic;
 		if (options.run !== undefined) this._execute = options.run.bind(this);
 
 		return this;
@@ -92,7 +98,7 @@ export class Command {
 	 */
 	async run(interaction: ChatInputCommandInteraction) {
 		try {
-			if (interaction.user.id === env.OWNER_ID)
+			if (this.isPublic || interaction.user.id === env.OWNER_ID)
 				await this._execute(interaction);
 		} catch (message) {
 			void CustomClient.printToStderr(message, true);

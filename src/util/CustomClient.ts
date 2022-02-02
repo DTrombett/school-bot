@@ -5,10 +5,10 @@ import { inspect } from "node:util";
 import color, { Color } from "./colors";
 import type Command from "./Command";
 import type Event from "./Event";
-import getVaccines from "./getVaccines";
 import loadCommands from "./loadCommands";
 import loadEvents from "./loadEvents";
 import occurrences from "./occurrences";
+import { covid, vaccines } from "./playwright";
 import { EventType } from "./types";
 
 /**
@@ -157,8 +157,7 @@ export class CustomClient<T extends boolean = boolean> extends Client<T> {
 			loadCommands(this),
 			...Object.values(EventType).map((type) => loadEvents(this, type)),
 		]);
-		// This is outside the promise.all because it's just for reference
-		getVaccines().catch(CustomClient.printToStderr);
+		Promise.all([vaccines(), covid()]).catch(CustomClient.printToStderr);
 
 		return super.login();
 	}
