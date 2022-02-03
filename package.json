@@ -46,7 +46,7 @@
     "cron-parser": "^4.2.1",
     "discord-api-types": "^0.26.1",
     "discord.js": "^14.0.0-dev.1643889786.04502ce",
-    "dotenv": "^15.0.0",
+    "dotenv": "^16.0.0",
     "erlpack": "github:discord/erlpack",
     "playwright": "^1.18.1",
     "utf-8-validate": "^5.0.8",
