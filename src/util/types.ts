@@ -25,6 +25,15 @@ export type ActionRowType = NonNullable<
 	: never;
 
 /**
+ * An activity from Argo
+ */
+export type Activity = {
+	date: string;
+	description: string;
+	subject: string;
+};
+
+/**
  * Options to create a command
  */
 export type CommandOptions = {
