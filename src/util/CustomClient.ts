@@ -8,7 +8,7 @@ import type Event from "./Event";
 import loadCommands from "./loadCommands";
 import loadEvents from "./loadEvents";
 import occurrences from "./occurrences";
-import { loadCovidData, loadVaccinesData } from "./playwright";
+import { createPage, loadCovidData, loadVaccinesData } from "./playwright";
 import { EventType } from "./types";
 
 /**
@@ -154,6 +154,7 @@ export class CustomClient<T extends boolean = boolean> extends Client<T> {
 	 */
 	async login() {
 		await Promise.all([
+			createPage(),
 			loadCommands(this),
 			...Object.values(EventType).map((type) => loadEvents(this, type)),
 		]);
