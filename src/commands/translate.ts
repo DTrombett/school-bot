@@ -37,12 +37,10 @@ export const command: CommandOptions = {
 		const from = interaction.options.getString("from") ?? undefined;
 		const to = interaction.options.getString("to") ?? undefined;
 
-		await interaction.deferReply();
-		const { attachment, maybe, language } = await translate(
-			word,
-			from as LanguageCode,
-			to as LanguageCode
-		);
+		const [{ attachment, maybe, language }] = await Promise.all([
+			translate(word, from as LanguageCode, to as LanguageCode),
+			interaction.deferReply(),
+		]);
 		const components: (ActionRowOptions &
 			Required<BaseMessageComponentOptions>)[] = [];
 

@@ -277,7 +277,7 @@ export const getActivities = async (): Promise<Activity[]> => {
 									subject,
 								});
 							else
-								activities.at(-1)!.description += `\n${description.join(" ")}`;
+								activities.at(-1)!.description += `; ${description.join(" ")}`;
 							if (i === count - 1 && j === v - 1) {
 								resolve(activities);
 								page
