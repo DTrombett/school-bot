@@ -1,6 +1,12 @@
 import { GuildChannel } from "discord.js";
 import type { EventOptions } from "../../util";
-import { CustomClient, EventType, interactionCommand } from "../../util";
+import {
+	CustomClient,
+	EventType,
+	interactionCommand,
+	translate,
+	translations,
+} from "../../util";
 
 export const event: EventOptions<EventType.Discord, "interactionCreate"> = {
 	name: "interactionCreate",
@@ -48,6 +54,42 @@ export const event: EventOptions<EventType.Discord, "interactionCreate"> = {
 				}`,
 				true
 			);
+			return;
+		}
+		if (interaction.isButton()) {
+			const [arg, id] = interaction.customId.split("-");
+
+			switch (arg) {
+				case "translate":
+					const { from, to, maybe, word, language } = translations[Number(id)];
+
+					interaction
+						.deferUpdate()
+						.then(async () => {
+							const { attachment } = await translate(
+								maybe ?? word,
+								language ?? from,
+								to
+							);
+
+							return interaction.editReply({
+								files: [
+									{
+										attachment,
+										name: "translate.jpg",
+									},
+								],
+								components: [],
+							});
+						})
+						.catch(CustomClient.printToStderr);
+					break;
+				default:
+					void CustomClient.printToStderr(
+						`Received unknown button interaction ${interaction.customId}`
+					);
+					interaction.deferUpdate().catch(CustomClient.printToStderr);
+			}
 		}
 	},
 };
