@@ -1,6 +1,5 @@
 import Constants from "./Constants";
 
-export * from "./autocomplete";
 export * from "./capitalize";
 export * from "./cast";
 export * from "./colors";

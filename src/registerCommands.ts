@@ -4,6 +4,7 @@ import type {
 	APIGuildApplicationCommandPermissions,
 } from "discord-api-types/v9";
 import { APIVersion, Routes } from "discord-api-types/v9";
+import { EnumResolvers } from "discord.js";
 import { config } from "dotenv";
 import { promises } from "node:fs";
 import { join } from "node:path";
@@ -51,7 +52,7 @@ await rest.put(
 			permissions: [
 				{
 					id: env.OWNER_ID!,
-					type: 2,
+					type: EnumResolvers.resolveApplicationCommandPermissionType("USER"),
 					permission: true,
 				},
 			],
