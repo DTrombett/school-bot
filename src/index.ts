@@ -1,9 +1,9 @@
 import { config } from "dotenv";
 import { start } from "node:repl";
 import Constants, {
-	loadCovidData,
 	createJob,
 	CustomClient,
+	loadCovidData,
 	loadVaccinesData,
 } from "./util";
 
