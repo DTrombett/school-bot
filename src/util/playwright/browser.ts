@@ -1,173 +1,16 @@
 import { AsyncQueue } from "@sapphire/async-queue";
-import type { Buffer } from "node:buffer";
 import { env } from "node:process";
 import type { Browser, BrowserContext, Page } from "playwright";
 import { chromium, devices } from "playwright";
-import type { Activity } from "..";
+import type { Activity, TranslationResults } from "..";
 import { parseDate } from "../argoDate";
 import CustomClient from "../CustomClient";
+import { LanguageCode } from "../types";
 
 const cache = {
 	activities: { data: [] as Activity[], lastUpdate: 0 },
 };
 const cacheTimeout = 1000 * 60 * 5;
-
-/**
- * A list of ISO 639-1 language codes
- */
-export enum LanguageCode {
-	"Abkhazian" = "ab",
-	"Afar" = "aa",
-	"Afrikaans" = "af",
-	"Akan" = "ak",
-	"Albanian" = "sq",
-	"Amharic" = "am",
-	"Arabic" = "ar",
-	"Aragonese" = "an",
-	"Armenian" = "hy",
-	"Assamese" = "as",
-	"Avestan" = "ae",
-	"Aymara" = "ay",
-	"Azerbaijani" = "az",
-	"Bambara" = "bm",
-	"Bashkir" = "ba",
-	"Basque" = "eu",
-	"Belarusian" = "be",
-	"Bengali" = "bn",
-	"Bosnian" = "bs",
-	"Breton" = "br",
-	"Bulgarian" = "bg",
-	"Burmese" = "my",
-	"Catalan" = "ca",
-	"Chamorro" = "ch",
-	"Chechen" = "ce",
-	"Chichewa" = "ny",
-	"Chinese" = "zh",
-	"Chuvash" = "cv",
-	"Cornish" = "kw",
-	"Corsican" = "co",
-	"Cree" = "cr",
-	"Croatian" = "hr",
-	"Czech" = "cs",
-	"Danish" = "da",
-	"Dutch" = "nl",
-	"English" = "en",
-	"Esperanto" = "eo",
-	"Estonian" = "et",
-	"Ewe" = "ee",
-	"Faroese" = "fo",
-	"Fijian" = "fj",
-	"Finnish" = "fi",
-	"French" = "fr",
-	"Galician" = "gl",
-	"Georgian" = "ka",
-	"German" = "de",
-	"Greek" = "el",
-	"Guarani" = "gn",
-	"Gujarati" = "gu",
-	"Haitian" = "ht",
-	"Hausa" = "ha",
-	"Hebrew" = "he",
-	"Herero" = "hz",
-	"Hindi" = "hi",
-	"Hungarian" = "hu",
-	"Indonesian" = "id",
-	"Irish" = "ga",
-	"Igbo" = "ig",
-	"Inupiaq" = "ik",
-	"Ido" = "io",
-	"Icelandic" = "is",
-	"Italian" = "it",
-	"Inuktitut" = "iu",
-	"Japanese" = "ja",
-	"Javanese" = "jv",
-	"Kannada" = "kn",
-	"Kashmiri" = "ks",
-	"Kazakh" = "kk",
-	"Central Khmer" = "km",
-	"Kikuyu" = "ki",
-	"Kirghiz" = "ky",
-	"Komi" = "kv",
-	"Kongo" = "kg",
-	"Korean" = "ko",
-	"Kurdish" = "ku",
-	"Latin" = "la",
-	"Luxembourgish" = "lb",
-	"Ganda" = "lg",
-	"Lao" = "lo",
-	"Lithuanian" = "lt",
-	"Latvian" = "lv",
-	"Manx" = "gv",
-	"Macedonian" = "mk",
-	"Malagasy" = "mg",
-	"Malay" = "ms",
-	"Malayalam" = "ml",
-	"Maltese" = "mt",
-	"Maori" = "mi",
-	"Marathi" = "mr",
-	"Marshallese" = "mh",
-	"Mongolian" = "mn",
-	"Nauru" = "na",
-	"Navajo" = "nv",
-	"North Ndebele" = "nd",
-	"Nepali" = "ne",
-	"Norwegian Bokmål" = "nb",
-	"Norwegian Nynorsk" = "nn",
-	"Norwegian" = "no",
-	"Sichuan Yi" = "ii",
-	"South Ndebele" = "nr",
-	"Occitan" = "oc",
-	"Ojibwa" = "oj",
-	"Church Slavic" = "cu",
-	"Oriya" = "or",
-	"Ossetian" = "os",
-	"Punjabi" = "pa",
-	"Pali" = "pi",
-	"Persian" = "fa",
-	"Polish" = "pl",
-	"Pashto" = "ps",
-	"Portuguese" = "pt",
-	"Quechua" = "qu",
-	"Romansh" = "rm",
-	"Romanian" = "ro",
-	"Russian" = "ru",
-	"Sanskrit" = "sa",
-	"Sardinian" = "sc",
-	"Sindhi" = "sd",
-	"Northern Sami" = "se",
-	"Samoan" = "sm",
-	"Serbian" = "sr",
-	"Gaelic" = "gd",
-	"Shona" = "sn",
-	"Slovak" = "sk",
-	"Slovenian" = "sl",
-	"Somali" = "so",
-	"Southern Sotho" = "st",
-	"Spanish" = "es",
-	"Sundanese" = "su",
-	"Swahili" = "sw",
-	"Swedish" = "sv",
-	"Tamil" = "ta",
-	"Telugu" = "te",
-	"Tajik" = "tg",
-	"Thai" = "th",
-	"Uighur" = "ug",
-	"Ukrainian" = "uk",
-	"Urdu" = "ur",
-	"Uzbek" = "uz",
-	"Venda" = "ve",
-	"Vietnamese" = "vi",
-	"Volapük" = "vo",
-	"Walloon" = "wa",
-	"Welsh" = "cy",
-	"Wolof" = "wo",
-	"Western Frisian" = "fy",
-	"Xhosa" = "xh",
-	"Yiddish" = "yi",
-	"Yoruba" = "yo",
-	"Zhuang" = "za",
-	"Zulu" = "zu",
-}
 
 const _pages: Page[] = [],
 	indexes = {
@@ -181,13 +24,7 @@ let _browser: Browser, _context: BrowserContext;
 /**
  * Translations made so far
  */
-export const translations: {
-	from: LanguageCode | "auto";
-	to: LanguageCode;
-	word: string;
-	language?: LanguageCode;
-	maybe?: string;
-}[] = [];
+export const translations: TranslationResults[] = [];
 
 /**
  * Load Argo.
@@ -317,7 +154,11 @@ export const translate = async (
 	word: string,
 	from: LanguageCode | "auto" = "auto",
 	to = LanguageCode["Italian"]
-): Promise<{ attachment: Buffer; maybe?: string; language?: string }> => {
+): Promise<TranslationResults> => {
+	const existing = translations.find(
+		(t) => t.word === word && t.to === to && t.from === from
+	);
+	if (existing) return existing;
 	const [page, queue] = await createPage(indexes.translate);
 
 	await page.goto(
