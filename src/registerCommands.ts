@@ -19,6 +19,7 @@ config({ path: join(cwd(), ".env") });
 
 const { DISCORD_CLIENT_ID: applicationId, TEST_GUILD: guildId } = env;
 const rest = new REST({ version: APIVersion }).setToken(env.DISCORD_TOKEN!);
+// eslint-disable-next-line security/detect-non-literal-fs-filename
 const commands = await promises
 	.readdir(new URL(Constants.commandsFolderName(), import.meta.url))
 	.then((fileNames) =>

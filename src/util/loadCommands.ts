@@ -11,6 +11,7 @@ const folder = Constants.commandsFolderName();
  * @param client - The client to load commands into
  */
 export const loadCommands = (client: CustomClient) =>
+	// eslint-disable-next-line security/detect-non-literal-fs-filename
 	promises
 		.readdir(new URL(folder, import.meta.url))
 		.then((fileNames) =>

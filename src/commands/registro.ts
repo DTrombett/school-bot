@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import type { CommandOptions } from "../util";
-import { getActivities } from "../util";
+import { getActivities, parseDate } from "../util";
 
 export const command: CommandOptions = {
 	data: new SlashCommandBuilder()
@@ -18,58 +18,55 @@ export const command: CommandOptions = {
 				)
 		),
 	async run(interaction) {
-		const _now = new Date();
-		const now = {
-			day: _now.getDate(),
-			month: _now.getMonth() + 1,
-			year: _now.getFullYear(),
-		};
-		let [activities] = await Promise.all([
-			getActivities(),
-			interaction.deferReply(),
-		]);
-		const subjectOption = interaction.options.getString("materia");
-		const expectSubject = subjectOption != null;
-		const dateOption =
-			interaction.options.getString("data") ??
-			(expectSubject
-				? null
-				: activities.find((a) => {
-						const args = a.date.split("/").map((s) => parseInt(s));
+		const today = new Date();
 
-						return (
-							args[0] === now.day &&
-							args[1] === now.month &&
-							args[2] === now.year
-						);
-				  })
-			)?.date;
-		const expectDate = dateOption != null;
+		today.setHours(0, 0, 0, 0);
+		switch (interaction.options.getSubcommand()) {
+			case "argomenti":
+				const [rawActivities] = await Promise.all([
+					getActivities(),
+					interaction.deferReply(),
+				]);
+				const subjectOption = interaction.options
+					.getString("materia")
+					?.toLowerCase();
+				const expectSubject = subjectOption != null;
+				const dateOption =
+					parseDate(interaction.options.getString("data")) ??
+					(expectSubject ? null : today);
+				const time = dateOption?.getTime();
+				const expectDate = dateOption != null;
+				const activities = rawActivities.filter(
+					({ date, subject }) =>
+						(!expectDate || date.getTime() === time) &&
+						(!expectSubject || subject.toLowerCase().includes(subjectOption))
+				);
 
-		activities = activities.filter(
-			({ date, subject }) =>
-				(!expectDate || date === dateOption) &&
-				(!expectSubject ||
-					subject.toLowerCase().includes(subjectOption.toLowerCase()))
-		);
-		await interaction.editReply({
-			content: `${
-				expectSubject
-					? `**${activities[0].subject}**${
-							expectDate ? ` (**${dateOption}**)` : ""
-					  }`
-					: `**${dateOption!}**`
-			}:\n\n${
-				activities
-					.map(
-						(activity) =>
-							`${expectSubject ? "" : `**${activity.subject}**: `}${
-								activity.description
-							}${expectDate ? "" : ` (**${activity.date}**)`}`
-					)
-					.join("\n")
-					.slice(0, 2000) || "Nessuna attività trovata!"
-			}`,
-		});
+				await interaction.editReply({
+					content: `${
+						expectSubject
+							? `**${activities[0]?.subject ?? subjectOption.toUpperCase()}**${
+									expectDate ? ` (**${dateOption.toLocaleDateString()}**)` : ""
+							  }`
+							: `**${dateOption!.toLocaleDateString()}**`
+					}:\n\n${
+						activities
+							.map(
+								(activity) =>
+									`${expectSubject ? "" : `**${activity.subject}**: `}${
+										activity.description
+									}${
+										expectDate
+											? ""
+											: ` (**${activity.date.toLocaleDateString()}**)`
+									}`
+							)
+							.join("\n")
+							.slice(0, 2000) || "Nessuna attività trovata!"
+					}`,
+				});
+				break;
+			default:
+		}
 	},
 };

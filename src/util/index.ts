@@ -1,5 +1,6 @@
 import Constants from "./Constants";
 
+export * from "./argoDate";
 export * from "./capitalize";
 export * from "./cast";
 export * from "./colors";

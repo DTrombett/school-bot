@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection */
 import { stdout } from "process";
 import { clearLine, moveCursor } from "readline";
 import type { EventOptions } from "../../util";

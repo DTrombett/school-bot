@@ -4,6 +4,7 @@ import { env } from "node:process";
 import type { Browser, BrowserContext, Page } from "playwright";
 import { chromium, devices } from "playwright";
 import type { Activity } from "..";
+import { parseDate } from "../argoDate";
 import CustomClient from "../CustomClient";
 
 /**
@@ -217,10 +218,12 @@ const loadTranslate = async () => {
  * @returns The page object
  */
 export const createPage = async (index = 0): Promise<[Page, AsyncQueue]> => {
+	// eslint-disable-next-line security/detect-object-injection
 	const queue = queues[index];
 
 	if (_pages.length) {
 		await queue.wait();
+		// eslint-disable-next-line security/detect-object-injection
 		return [_pages[index], queue];
 	}
 	_browser ??= await chromium.launch({
@@ -235,6 +238,7 @@ export const createPage = async (index = 0): Promise<[Page, AsyncQueue]> => {
 		screen: { width: 1536, height: 792 },
 	});
 	await Promise.all([loadArgo(), loadTranslate()]);
+	// eslint-disable-next-line security/detect-object-injection
 	return [_pages[index], queue];
 };
 
@@ -272,7 +276,7 @@ export const getActivities = async (): Promise<Activity[]> => {
 
 							if (date)
 								activities.push({
-									date,
+									date: parseDate(date),
 									description: description.join(" "),
 									subject,
 								});

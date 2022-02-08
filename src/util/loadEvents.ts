@@ -13,6 +13,7 @@ const folder = Constants.eventsFolderName();
  * @param subfolder - The subfolder to load the events from
  */
 export const loadEvents = (client: CustomClient, subfolder: EventType) =>
+	// eslint-disable-next-line security/detect-non-literal-fs-filename
 	promises
 		.readdir(new URL(join(folder, subfolder), import.meta.url))
 		.then((fileNames) =>

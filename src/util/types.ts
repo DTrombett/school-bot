@@ -28,7 +28,7 @@ export type ActionRowType = NonNullable<
  * An activity from Argo
  */
 export type Activity = {
-	date: string;
+	date: Date;
 	description: string;
 	subject: string;
 };

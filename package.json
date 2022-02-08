@@ -10,7 +10,7 @@
     "lint": "eslint src --fix",
     "prepare": "npm test && husky install",
     "prettier": "prettier --write src/**/*.ts",
-    "start:no-build": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings ./dist/index.js",
+    "start:no-build": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings dist/index.js",
     "start": "npm run build && npm run start:no-build",
     "test": "eslint src && tsc --noEmit"
   },
@@ -35,6 +35,7 @@
     "@typescript-eslint/parser": "^5.10.2",
     "eslint": "^8.8.0",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-security": "^1.4.0",
     "husky": "^7.0.4",
     "tsup": "^5.11.13",
     "typescript": "^4.5.5"

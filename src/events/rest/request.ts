@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection */
 import type { EventOptions } from "../../util";
 import { Color, color, CustomClient, EventType } from "../../util";
 
