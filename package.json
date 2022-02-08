@@ -4,13 +4,14 @@
   "description": "A bot to organize school",
   "homepage": "https://github.com/DTrombett/school-bot#readme",
   "exports": "./dist/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsup",
-    "commands": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings dist/registerCommands.js",
+    "commands": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings ./dist/registerCommands.js",
     "lint": "eslint src --fix",
     "prepare": "npm test && husky install",
     "prettier": "prettier --write src/**/*.ts",
-    "start:no-build": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings dist/index.js",
+    "start:no-build": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings .",
     "start": "npm run build && npm run start:no-build",
     "test": "eslint src && tsc --noEmit"
   },

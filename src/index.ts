@@ -7,6 +7,7 @@ import Constants, {
 	loadVaccinesData,
 } from "./util";
 
+void CustomClient.printToStdout("Starting...");
 await CustomClient.logToFile("\n");
 config({ debug: true });
 console.time(Constants.clientOnlineLabel());
