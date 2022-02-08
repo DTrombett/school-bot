@@ -7,6 +7,11 @@ import type { Activity } from "..";
 import { parseDate } from "../argoDate";
 import CustomClient from "../CustomClient";
 
+const cache = {
+	activities: { data: [] as Activity[], lastUpdate: 0 },
+};
+const cacheTimeout = 1000 * 60 * 5;
+
 /**
  * A list of ISO 639-1 language codes
  */
@@ -247,6 +252,8 @@ export const createPage = async (index = 0): Promise<[Page, AsyncQueue]> => {
  * @returns The activities
  */
 export const getActivities = async (): Promise<Activity[]> => {
+	if (Date.now() - cache.activities.lastUpdate < cacheTimeout)
+		return cache.activities.data;
 	const activities: Activity[] = [];
 	const [page, queue] = await createPage(indexes.argo);
 	const fields = page.locator("fieldset");
@@ -284,6 +291,8 @@ export const getActivities = async (): Promise<Activity[]> => {
 								activities.at(-1)!.description += `; ${description.join(" ")}`;
 							if (i === count - 1 && j === v - 1) {
 								resolve(activities);
+								cache.activities.data = activities;
+								cache.activities.lastUpdate = Date.now();
 								page
 									.click(".btl-modal-closeButton")
 									.then(() => {
