@@ -1,7 +1,7 @@
 import { AsyncQueue } from "@sapphire/async-queue";
 import { env } from "node:process";
 import type { Browser, BrowserContext, Page } from "playwright";
-import { chromium, devices } from "playwright";
+import { chromium } from "playwright";
 import type { Activity, TranslationResults } from "..";
 import { parseDate } from "../argoDate";
 import CustomClient from "../CustomClient";
@@ -88,15 +88,14 @@ export const createPage = async (index = 0): Promise<[Page, AsyncQueue]> => {
 		return [_pages[index], queue];
 	}
 	_browser ??= await chromium.launch({
-		args: ["--enable-features=WebContentsForceDark"],
+		args: ["--enable-features=WebContentsForceDark", "--start-maximized"],
 		channel: "chrome-beta",
 		headless: false,
 	});
 	_context ??= await _browser.newContext({
-		...devices["Desktop Chrome"],
-		viewport: { width: 1536, height: 792 },
+		colorScheme: "dark",
 		locale: "it-IT",
-		screen: { width: 1536, height: 792 },
+		viewport: null,
 	});
 	await Promise.all([loadArgo(), loadTranslate()]);
 	// eslint-disable-next-line security/detect-object-injection
