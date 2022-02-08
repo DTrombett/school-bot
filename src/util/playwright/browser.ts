@@ -27,6 +27,24 @@ let _browser: Browser, _context: BrowserContext;
 export const translations: TranslationResults[] = [];
 
 /**
+ * Conclude Argo login.
+ * @param page - The page to load
+ */
+const concludeArgoLogin = async (page: Page) => {
+	await page.fill('input[name="username"]', env.ARGO_USERNAME ?? "");
+	await page.fill('input[name="password"]', env.ARGO_PASSWORD ?? "");
+	await page
+		.fill('input[name="famiglia_customer_code"]', env.ARGO_CODE ?? "", {
+			timeout: 100,
+		})
+		.catch(() => {
+			// Ignore
+		});
+	await page.click("text=Entra");
+	void CustomClient.printToStdout(`[Argo]: Logged in!`, true);
+};
+
+/**
  * Load Argo.
  */
 const loadArgo = async () => {
@@ -34,10 +52,11 @@ const loadArgo = async () => {
 
 	indexes.argo = _pages.push(page) - 1;
 	await page.goto(`https://${env.ARGO_CODE ?? ""}.scuolanext.info`);
-	await page.fill('input[name="username"]', env.ARGO_USERNAME ?? "");
-	await page.fill('input[name="password"]', env.ARGO_PASSWORD ?? "");
-	await page.click("text=Entra");
-	void CustomClient.printToStdout(`[Argo]: Logged in!`, true);
+	await concludeArgoLogin(page);
+	page.on("load", () => {
+		if (/https:\/\/www\.portaleargo\.it\/auth\/sso\/login.*/.test(page.url()))
+			void concludeArgoLogin(page);
+	});
 };
 
 /**

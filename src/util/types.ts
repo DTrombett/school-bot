@@ -556,5 +556,5 @@ export type TranslationResults = {
 	word: string;
 	attachment: Buffer;
 	maybe?: string;
-	language?: string;
+	language?: LanguageCode;
 };

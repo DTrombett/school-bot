@@ -10,9 +10,6 @@
 		"esm"
 	],
 	"minify": true,
-	"minifyIdentifiers": true,
-	"minifySyntax": true,
-	"minifyWhitespace": true,
 	"platform": "node",
 	"sourcemap": true,
 	"target": "ESNext"
