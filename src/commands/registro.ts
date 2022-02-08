@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import type { CommandOptions } from "../util";
-import { getActivities, parseDate } from "../util";
+import { lessonArguments, parseDate } from "../util";
 
 export const command: CommandOptions = {
 	data: new SlashCommandBuilder()
@@ -23,48 +23,19 @@ export const command: CommandOptions = {
 		today.setHours(0, 0, 0, 0);
 		switch (interaction.options.getSubcommand()) {
 			case "argomenti":
-				const [rawActivities] = await Promise.all([
-					getActivities(),
-					interaction.deferReply(),
-				]);
 				const subjectOption = interaction.options
 					.getString("materia")
 					?.toLowerCase();
-				const expectSubject = subjectOption != null;
-				const dateOption =
-					parseDate(interaction.options.getString("data")) ??
-					(expectSubject ? null : today);
-				const time = dateOption?.getTime();
-				const expectDate = dateOption != null;
-				const activities = rawActivities.filter(
-					({ date, subject }) =>
-						(!expectDate || date.getTime() === time) &&
-						(!expectSubject || subject.toLowerCase().includes(subjectOption))
-				);
+				const [options] = await Promise.all([
+					lessonArguments(
+						parseDate(interaction.options.getString("data")) ??
+							(subjectOption != null ? null : today),
+						subjectOption
+					),
+					interaction.deferReply(),
+				]);
 
-				await interaction.editReply({
-					content: `${
-						expectSubject
-							? `**${activities[0]?.subject ?? subjectOption.toUpperCase()}**${
-									expectDate ? ` (**${dateOption.toLocaleDateString()}**)` : ""
-							  }`
-							: `**${dateOption!.toLocaleDateString()}**`
-					}:\n\n${
-						activities
-							.map(
-								(activity) =>
-									`${expectSubject ? "" : `**${activity.subject}**: `}${
-										activity.description
-									}${
-										expectDate
-											? ""
-											: ` (**${activity.date.toLocaleDateString()}**)`
-									}`
-							)
-							.join("\n")
-							.slice(0, 2000) || "Nessuna attività trovata!"
-					}`,
-				});
+				await interaction.editReply(options);
 				break;
 			default:
 		}

@@ -10,6 +10,7 @@ import type {
 	ChatInputCommandInteraction,
 	ClientEvents as DiscordEvents,
 	CommandInteraction,
+	InteractionReplyOptions,
 	MessageOptions,
 	SelectMenuInteraction,
 } from "discord.js";
@@ -541,6 +542,11 @@ export enum MatchLevel {
 	 */
 	Full,
 }
+
+/**
+ * The return type of a method to handle Argo data
+ */
+export type RegistroMethod = Promise<InteractionReplyOptions & MessageOptions>;
 
 /**
  * An interaction that can be replied to

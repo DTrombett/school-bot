@@ -18,6 +18,7 @@ export * from "./loadEvents";
 export * from "./matchStrings";
 export * from "./occurrences";
 export * from "./playwright";
+export * from "./registro";
 export * from "./restart";
 export * from "./startJob";
 export * from "./toLocaleString";
