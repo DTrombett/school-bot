@@ -11,8 +11,7 @@
     "lint": "eslint src --fix",
     "prepare": "npm test && husky install",
     "prettier": "prettier --write src/**/*.ts",
-    "start:no-build": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings .",
-    "start": "npm run build && npm run start:no-build",
+    "start": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings .",
     "test": "eslint src && tsc --noEmit"
   },
   "author": "DTrombett",
@@ -42,14 +41,13 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "@discordjs/rest": "^0.3.0",
+    "@discordjs/builders": "^0.13.0-dev.1644408664.fe11ff5",
+    "@discordjs/rest": "^0.3.0-dev.1644408653.fe11ff5",
     "@sapphire/async-queue": "^1.2.0",
     "bufferutil": "^4.0.6",
     "cron-parser": "^4.2.1",
     "discord-api-types": "^0.26.1",
     "discord.js": "^14.0.0-dev.1644408625.fe11ff5",
-    "dotenv": "^16.0.0",
     "erlpack": "github:discord/erlpack",
     "playwright": "^1.18.1",
     "utf-8-validate": "^5.0.8",

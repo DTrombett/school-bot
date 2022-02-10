@@ -5,17 +5,13 @@ import type {
 } from "discord-api-types/v9";
 import { APIVersion, Routes } from "discord-api-types/v9";
 import { EnumResolvers } from "discord.js";
-import { config } from "dotenv";
 import { promises } from "node:fs";
-import { join } from "node:path";
-import { cwd, env } from "node:process";
+import { env } from "node:process";
 import { URL } from "node:url";
 import type { CommandOptions } from "./util";
 import Constants, { CustomClient } from "./util";
 
 console.time("Register slash commands");
-
-config({ path: join(cwd(), ".env") });
 
 const { DISCORD_CLIENT_ID: applicationId, TEST_GUILD: guildId } = env;
 const rest = new REST({ version: APIVersion }).setToken(env.DISCORD_TOKEN!);

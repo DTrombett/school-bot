@@ -1,4 +1,3 @@
-import { config } from "dotenv";
 import { start } from "node:repl";
 import Constants, {
 	createJob,
@@ -9,7 +8,6 @@ import Constants, {
 
 void CustomClient.printToStdout("Starting...");
 await CustomClient.logToFile("\n");
-config({ debug: true });
 console.time(Constants.clientOnlineLabel());
 
 const client = new CustomClient();
