@@ -11,7 +11,7 @@
     "lint": "eslint src --fix",
     "prepare": "npm test && husky install",
     "prettier": "prettier --write src/**/*.ts",
-    "start": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings .",
+    "start": "node --experimental-specifier-resolution=node --enable-source-maps --trace-warnings --experimental-fetch .",
     "test": "eslint src && tsc --noEmit"
   },
   "author": "DTrombett",
