@@ -1,6 +1,5 @@
 /* eslint-disable security/detect-object-injection */
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Colors } from "discord.js";
 import type { CommandOptions } from "../util";
 
 const crops = [
@@ -92,12 +91,16 @@ export const command: CommandOptions = {
 
 					if (c > count) {
 						for (let i = 1; i < counts.length; i++)
-							if (counts[i].diff < counts[index].diff) index = i;
-						counts[index].count--;
+							if (counts[i].diff > 0 && counts[i].diff > counts[index].diff)
+								index = i;
+						counts[index].diff =
+							counts[index].count-- - counts[index].diff - counts[index].count;
 					} else if (c < count) {
 						for (let i = 1; i < counts.length; i++)
-							if (counts[i].diff > counts[index].diff) index = i;
-						counts[index].count++;
+							if (counts[i].diff < 0 && counts[i].diff < counts[index].diff)
+								index = i;
+						counts[index].diff =
+							counts[index].count++ - counts[index].diff - counts[index].count;
 					}
 				}
 
@@ -105,7 +108,7 @@ export const command: CommandOptions = {
 					embeds: [
 						{
 							title: "Campi disponibili per piantagione",
-							color: Colors.Yellow,
+							color: Math.round((count * 16777215) / 100),
 							description: availableCrops
 								.map(
 									(crop, i) =>
