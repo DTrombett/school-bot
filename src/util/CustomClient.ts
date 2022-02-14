@@ -42,6 +42,7 @@ export class CustomClient<T extends boolean = boolean> extends Client<T> {
 			failIfNotExists: false,
 			rest: {
 				api: "https://canary.discord.com/api",
+				version: "10",
 				invalidRequestWarningInterval: 9_998,
 			},
 			makeCache: Options.cacheWithLimits({
