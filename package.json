@@ -49,7 +49,7 @@
     "discord-api-types": "^0.26.1",
     "discord.js": "^14.0.0-dev.1644667405.861f0e2",
     "erlpack": "github:discord/erlpack",
-    "playwright": "^1.19.0",
+    "playwright": "^1.19.1",
     "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
   }
