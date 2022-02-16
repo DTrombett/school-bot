@@ -1,6 +1,5 @@
 import { ButtonComponent, SlashCommandBuilder } from "@discordjs/builders";
-import type { ButtonStyle } from "discord-api-types/v9";
-import type { ActionRowOptions, BaseMessageComponentOptions } from "discord.js";
+import type { WebhookEditMessageOptions } from "discord.js";
 import { EnumResolvers } from "discord.js";
 import type { CommandOptions } from "../util";
 import { LanguageCode, translate, translations } from "../util";
@@ -41,19 +40,14 @@ export const command: CommandOptions = {
 			translate(word, from as LanguageCode, to as LanguageCode),
 			interaction.deferReply(),
 		]);
-		const components: (ActionRowOptions &
-			Required<BaseMessageComponentOptions>)[] = [];
+		const components: WebhookEditMessageOptions["components"] = [];
 
 		if (maybe ?? "") {
 			const custom_id = `translate-${translations.length - 1}-maybe`;
 			const [row] = components;
 			const button = new ButtonComponent({
 				custom_id,
-				style: EnumResolvers.resolveButtonStyle(
-					"PRIMARY"
-				) as ButtonStyle.Primary,
-				// TODO: remove this once the bug is fixed
-				type: 2,
+				style: EnumResolvers.resolveButtonStyle("PRIMARY"),
 				emoji: { name: "✨" },
 				label: "Forse cercavi",
 			});
@@ -70,11 +64,7 @@ export const command: CommandOptions = {
 			const [row] = components;
 			const button = new ButtonComponent({
 				custom_id,
-				style: EnumResolvers.resolveButtonStyle(
-					"PRIMARY"
-				) as ButtonStyle.Primary,
-				// TODO: remove this once the bug is fixed
-				type: 2,
+				style: EnumResolvers.resolveButtonStyle("PRIMARY"),
 				emoji: { name: "✨" },
 				label: "Traduci da",
 			});
