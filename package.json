@@ -47,7 +47,7 @@
     "bufferutil": "^4.0.6",
     "cron-parser": "^4.2.1",
     "discord-api-types": "^0.27.1",
-    "discord.js": "^14.0.0-dev.1645012998.7959a68",
+    "discord.js": "^14.0.0-dev.1645056357.dee27db",
     "erlpack": "github:discord/erlpack",
     "playwright": "^1.19.1",
     "utf-8-validate": "^5.0.8",
