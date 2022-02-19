@@ -59,6 +59,7 @@ export const event: EventOptions<EventType.Discord, "interactionCreate"> = {
 		if (interaction.isButton()) {
 			const [arg, id] = interaction.customId.split("-");
 
+			if (arg.startsWith("calc")) return;
 			switch (arg) {
 				case "translate":
 					const { from, to, maybe, word, language } = translations[Number(id)];
@@ -88,7 +89,6 @@ export const event: EventOptions<EventType.Discord, "interactionCreate"> = {
 					void CustomClient.printToStderr(
 						`Received unknown button interaction ${interaction.customId}`
 					);
-					interaction.deferUpdate().catch(CustomClient.printToStderr);
 			}
 		}
 	},
