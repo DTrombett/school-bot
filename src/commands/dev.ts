@@ -7,7 +7,7 @@ import {
 	time,
 	TimestampStyles,
 } from "@discordjs/builders";
-import { Colors, DiscordAPIError, Util } from "discord.js";
+import { Colors, Util } from "discord.js";
 import type { Buffer } from "node:buffer";
 import type { ChildProcess } from "node:child_process";
 import { exec, execFile } from "node:child_process";
@@ -235,10 +235,6 @@ export const command: CommandOptions = {
 			test.setName(SubCommands.test).setDescription("Un comando di test")
 		),
 	async run(interaction) {
-		if (interaction.options.getSubcommand() === SubCommands.test)
-			return interaction.reply({
-				embeds: [new Embed().setDescription("test")],
-			});
 		await interaction.deferReply({
 			ephemeral:
 				interaction.options.getBoolean(SubCommandOptions.ephemeral) ?? true,
@@ -614,13 +610,6 @@ export const command: CommandOptions = {
 				});
 				break;
 			case SubCommands.test:
-				await interaction
-					.editReply({
-						embeds: [new Embed().setDescription("test")],
-					})
-					.catch((err: DiscordAPIError) =>
-						CustomClient.printToStderr(err.requestBody.json)
-					);
 				break;
 			default:
 				await interaction.editReply("Comando non riconosciuto");
