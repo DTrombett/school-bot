@@ -1,7 +1,6 @@
 import {
 	bold,
 	codeBlock,
-	Embed,
 	inlineCode,
 	SlashCommandBuilder,
 	time,
@@ -20,7 +19,6 @@ import {
 	exit,
 	memoryUsage,
 	stderr,
-	stdin,
 	stdout,
 	uptime,
 } from "node:process";
@@ -244,7 +242,6 @@ export const command: CommandOptions = {
 			child: ChildProcess,
 			cmd: string,
 			code: string,
-			commands: string[],
 			error: Error | undefined,
 			exitCode: number,
 			lines: number | null,
@@ -252,7 +249,6 @@ export const command: CommandOptions = {
 			memory: NodeJS.MemoryUsage,
 			output: string,
 			processUptime: Date,
-			restartProcess: boolean,
 			result: string;
 
 		switch (interaction.options.getSubcommand()) {
@@ -272,17 +268,18 @@ export const command: CommandOptions = {
 						`${cwd()}> ${Util.escapeInlineCode(cmd.slice(0, 2000 - 100))}`
 					)}`,
 					embeds: [
-						new Embed()
-							.setAuthor({
+						{
+							author: {
 								name: interaction.user.tag,
 								iconURL: interaction.user.displayAvatarURL(),
-							})
-							.setTitle("Output")
-							.setDescription(
-								codeBlock(Util.escapeCodeBlock(output.slice(0, 4096 - 7)))
-							)
-							.setColor(exitCode === 0 ? Colors.Green : Colors.Red)
-							.setTimestamp(),
+							},
+							title: "Output",
+							description: codeBlock(
+								Util.escapeCodeBlock(output.slice(0, 4096 - 7))
+							),
+							color: exitCode ? Colors.Red : Colors.Green,
+							timestamp: new Date().toISOString(),
+						},
 					],
 				});
 				break;
@@ -304,24 +301,27 @@ export const command: CommandOptions = {
 				await interaction.editReply({
 					content: `Eval elaborato in ${Date.now() - now}ms`,
 					embeds: [
-						new Embed()
-							.setAuthor({
+						{
+							author: {
 								name: interaction.user.tag,
 								iconURL: interaction.user.displayAvatarURL(),
-							})
-							.setTitle("Eval output")
-							.setDescription(
-								codeBlock("js", Util.escapeCodeBlock(result).slice(0, 4096 - 9))
-							)
-							.addField({
-								name: "Input",
-								value: codeBlock(
-									"js",
-									Util.escapeCodeBlock(code).slice(0, 1024 - 9)
-								),
-							})
-							.setColor(Colors.Blurple)
-							.setTimestamp(),
+							},
+							title: "Eval output",
+							description: codeBlock(
+								Util.escapeCodeBlock(result).slice(0, 4096 - 9)
+							),
+							color: Colors.Blurple,
+							timestamp: new Date().toISOString(),
+							fields: [
+								{
+									name: "Input",
+									value: codeBlock(
+										"js",
+										Util.escapeCodeBlock(code).slice(0, 1024 - 9)
+									),
+								},
+							],
+						},
 					],
 				});
 				break;
@@ -330,25 +330,22 @@ export const command: CommandOptions = {
 				await interaction.editReply({
 					content: `Memoria calcolata in ${Date.now() - now}ms`,
 					embeds: [
-						new Embed()
-							.setAuthor({
+						{
+							author: {
 								name: interaction.user.tag,
 								iconURL: interaction.user.displayAvatarURL(),
-							})
-							.setTitle("RAM")
-							.setDescription(
-								`${bold("Resident Set Size")}: ${bytesToMb(
-									memory.rss
-								)} MB\n${bold("Heap Total")}: ${bytesToMb(
-									memory.heapTotal
-								)} MB\n${bold("Heap Used")}: ${bytesToMb(
-									memory.heapUsed
-								)} MB\n${bold("External")}: ${bytesToMb(memory.external)} MB`
-							)
-							.setColor(
-								Math.round(((memory.rss / 1024 / 1024) * 16777215) / 500)
-							)
-							.setTimestamp(),
+							},
+							title: "RAM",
+							description: `${bold("Resident Set Size")}: ${bytesToMb(
+								memory.rss
+							)} MB\n${bold("Heap Total")}: ${bytesToMb(
+								memory.heapTotal
+							)} MB\n${bold("Heap Used")}: ${bytesToMb(
+								memory.heapUsed
+							)} MB\n${bold("External")}: ${bytesToMb(memory.external)} MB`,
+							color: Math.round(((memory.rss / 1024 / 1024) * 16777215) / 500),
+							timestamp: new Date().toISOString(),
+						},
 					],
 				});
 				break;
@@ -383,79 +380,31 @@ export const command: CommandOptions = {
 						`${Date.now() - now}ms`
 					)}`,
 					embeds: [
-						new Embed()
-							.setAuthor({
+						{
+							author: {
 								name: interaction.user.tag,
 								iconURL: interaction.user.displayAvatarURL(),
-							})
-							.setTitle("Uptime")
-							.setDescription(
-								`${bold("Processo")}: ${time(
-									processUptime,
-									TimestampStyles.RelativeTime
-								)} (${time(processUptime)})\n${bold("Bot")}: ${time(
-									botUptime,
-									TimestampStyles.RelativeTime
-								)} (${time(botUptime)})`
-							)
-							.setColor(Colors.Blurple)
-							.setTimestamp(),
+							},
+							title: "Uptime",
+							description: `${bold("Processo")}: ${time(
+								processUptime,
+								TimestampStyles.RelativeTime
+							)} (${time(processUptime)})\n${bold("Bot")}: ${time(
+								botUptime,
+								TimestampStyles.RelativeTime
+							)} (${time(botUptime)})`,
+							color: Colors.Blurple,
+							timestamp: new Date().toISOString(),
+						},
 					],
 				});
-				break;
-			case SubCommands.pull:
-				output = "";
-				commands = ["git pull"];
-				restartProcess =
-					interaction.options.getBoolean(SubCommandOptions.restartProcess) ??
-					false;
-				if (interaction.options.getBoolean(SubCommandOptions.packages) ?? false)
-					commands.push("rm -r node_modules", "rm package-lock.json", "npm i");
-				if (interaction.options.getBoolean(SubCommandOptions.rebuild) ?? false)
-					commands.push("npm run build");
-				if (
-					interaction.options.getBoolean(SubCommandOptions.registerCommands) ??
-					false
-				)
-					commands.push("npm run commands");
-				child = exec(commands.join(" && "));
-				child.stdout?.on("data", (data) => (output += data));
-				child.stderr?.on("data", (data) => (output += data));
-				child.stdout?.pipe(stdout);
-				child.stderr?.pipe(stderr);
-				exitCode = await new Promise((resolve) => {
-					child.once("close", resolve);
-				});
-				await interaction.editReply({
-					content:
-						exitCode === 0
-							? `Ho eseguito ${commands.join(" && ")} in ${
-									Date.now() - now
-							  }ms\n${
-									restartProcess
-										? "Sto riavviando il processo per rendere effettivi i cambiamenti..."
-										: "Il bot è nuovamente pronto all'uso!"
-							  }`
-							: `Errore durante l'esecuzione di ${inlineCode(
-									commands.join(" && ")
-							  )}\nCodice di errore: ${exitCode}`,
-					embeds: [
-						new Embed()
-							.setAuthor({
-								name: interaction.user.tag,
-								iconURL: interaction.user.displayAvatarURL(),
-							})
-							.setTitle("Output")
-							.setDescription(
-								codeBlock(Util.escapeCodeBlock(output.slice(0, 4096 - 7)))
-							)
-							.setColor(exitCode ? Colors.Green : Colors.Red)
-							.setTimestamp(),
-					],
-				});
-				if (restartProcess && exitCode === 0) restart(this.client);
 				break;
 			case SubCommands.cpp:
+				const codeOption = interaction.options.getString(
+					SubCommandOptions.code,
+					true
+				);
+
 				code = `${(
 					interaction.options.getString(SubCommandOptions.include) ?? "iostream"
 				)
@@ -466,10 +415,9 @@ export const command: CommandOptions = {
 				)
 					.split(commaRegex)
 					.map((namespace) => `using namespace ${namespace};`)
-					.join("\n")}\n\nint main() {\n\t${interaction.options.getString(
-					SubCommandOptions.code,
-					true
-				)}\n}`;
+					.join("\n")}\n\nint main() {\n\t${codeOption}${
+					codeOption.endsWith(";") ? "" : ";"
+				}\n}`;
 				error = await new Promise((resolve) => {
 					createWriteStream("./tmp/cpp.cpp")
 						.once("error", resolve)
@@ -500,31 +448,31 @@ export const command: CommandOptions = {
 					await interaction.editReply({
 						content: `Errore durante la compilazione del codice C++\nCodice di errore: ${exitCode}`,
 						embeds: [
-							new Embed()
-								.setAuthor({
+							{
+								author: {
 									name: interaction.user.tag,
 									iconURL: interaction.user.displayAvatarURL(),
-								})
-								.setTitle("Output")
-								.setDescription(
-									codeBlock(Util.escapeCodeBlock(output.slice(0, 4096 - 7)))
-								)
-								.setColor(Colors.Red)
-								.setTimestamp(),
-							new Embed()
-								.setAuthor({
+								},
+								title: "Output",
+								description: codeBlock(
+									Util.escapeCodeBlock(output.slice(0, 4096 - 7))
+								),
+								color: Colors.Red,
+								timestamp: new Date().toISOString(),
+							},
+							{
+								author: {
 									name: interaction.user.tag,
 									iconURL: interaction.user.displayAvatarURL(),
-								})
-								.setTitle("Codice C++")
-								.setDescription(
-									codeBlock(
-										"cpp",
-										Util.escapeCodeBlock(code.slice(0, 4096 - 7))
-									)
-								)
-								.setColor(Colors.Blurple)
-								.setTimestamp(),
+								},
+								title: "Codice C++",
+								description: codeBlock(
+									"cpp",
+									Util.escapeCodeBlock(code.slice(0, 4096 - 7))
+								),
+								color: Colors.Blurple,
+								timestamp: new Date().toISOString(),
+							},
 						],
 					});
 					break;
@@ -545,7 +493,6 @@ export const command: CommandOptions = {
 				child = execFile("./tmp/cpp.exe");
 				child.stderr?.on("data", onData);
 				child.stdout?.on("data", onData);
-				stdin.pipe(child.stdin!);
 				collector?.on("collect", (message) => {
 					const input = `${message.content}\n`;
 
@@ -597,15 +544,18 @@ export const command: CommandOptions = {
 						Date.now() - now
 					}ms\nRighe totali: ${length}\nRighe visualizzate: ${logs.length}`,
 					embeds: [
-						new Embed()
-							.setAuthor({
+						{
+							author: {
 								name: interaction.user.tag,
 								iconURL: interaction.user.displayAvatarURL(),
-							})
-							.setTitle("Logs")
-							.setDescription(codeBlock(Util.escapeCodeBlock(logs.join("\n"))))
-							.setColor(Colors.Blurple)
-							.setTimestamp(),
+							},
+							title: "Logs",
+							description: codeBlock(
+								Util.escapeCodeBlock(logs.slice(0, 4096 - 7).join("\n"))
+							),
+							color: Colors.Blurple,
+							timestamp: new Date().toISOString(),
+						},
 					],
 				});
 				break;
