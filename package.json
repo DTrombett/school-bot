@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@discordjs/builders": "^0.13.0-dev.1645402064.78aa36f",
-    "@discordjs/rest": "^0.4.0-dev.1645402054.78aa36f",
+    "@discordjs/rest": "^0.4.0-dev.1645617800.5158332",
     "@sapphire/async-queue": "^1.2.0",
     "@types/prettier": "^2.4.4",
     "bufferutil": "^4.0.6",
