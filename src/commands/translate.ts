@@ -1,6 +1,9 @@
-import { ButtonComponent, SlashCommandBuilder } from "@discordjs/builders";
-import type { WebhookEditMessageOptions } from "discord.js";
-import { EnumResolvers } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+import type {
+	APIActionRowComponent,
+	APIButtonComponent,
+} from "discord-api-types/v9";
+import { ButtonStyle, ComponentType } from "discord-api-types/v9";
 import type { CommandOptions } from "../util";
 import { LanguageCode, translate, translations } from "../util";
 
@@ -40,21 +43,22 @@ export const command: CommandOptions = {
 			translate(word, from as LanguageCode, to as LanguageCode),
 			interaction.deferReply(),
 		]);
-		const components: WebhookEditMessageOptions["components"] = [];
+		const components: APIActionRowComponent<APIButtonComponent>[] = [];
 
 		if (maybe ?? "") {
 			const custom_id = `translate-${translations.length - 1}-maybe`;
 			const [row] = components;
-			const button = new ButtonComponent({
+			const button: APIButtonComponent = {
 				custom_id,
-				style: EnumResolvers.resolveButtonStyle("PRIMARY"),
+				type: ComponentType.Button,
+				style: ButtonStyle.Primary,
 				emoji: { name: "✨" },
 				label: "Forse cercavi",
-			});
+			};
 
 			if (typeof row === "undefined")
 				components.push({
-					type: EnumResolvers.resolveComponentType("ACTION_ROW"),
+					type: ComponentType.ActionRow,
 					components: [button],
 				});
 			else row.components.push(button);
@@ -62,16 +66,17 @@ export const command: CommandOptions = {
 		if (language ?? "") {
 			const custom_id = `translate-${translations.length - 1}-language`;
 			const [row] = components;
-			const button = new ButtonComponent({
+			const button: APIButtonComponent = {
 				custom_id,
-				style: EnumResolvers.resolveButtonStyle("PRIMARY"),
+				style: ButtonStyle.Primary,
+				type: ComponentType.Button,
 				emoji: { name: "✨" },
 				label: "Traduci da",
-			});
+			};
 
 			if (typeof row === "undefined")
 				components.push({
-					type: EnumResolvers.resolveComponentType("ACTION_ROW"),
+					type: ComponentType.ActionRow,
 					components: [button],
 				});
 			else row.components.push(button);

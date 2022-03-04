@@ -1,13 +1,11 @@
 import { codeBlock, SlashCommandBuilder } from "@discordjs/builders";
 import type {
-	ActionRowData,
-	BaseComponentData,
-	ButtonComponentData,
-	ButtonInteraction,
-	ComponentType,
-	InteractionCollector,
-} from "discord.js";
-import { ButtonStyle, EnumResolvers, Message } from "discord.js";
+	APIActionRowComponent,
+	APIButtonComponent,
+} from "discord-api-types/v9";
+import { ButtonStyle, ComponentType } from "discord-api-types/v9";
+import type { ButtonInteraction, InteractionCollector } from "discord.js";
+import { Message } from "discord.js";
 import type { CommandOptions } from "../util";
 import {
 	CustomClient,
@@ -17,36 +15,36 @@ import {
 
 const separator = " ";
 
-const createNumberButton = (number: number | string): ButtonComponentData => ({
-	type: EnumResolvers.resolveComponentType("BUTTON"),
-	style: EnumResolvers.resolveButtonStyle("SECONDARY") as ButtonStyle.Primary,
-	customId: `calc${separator}${number}`,
+const createNumberButton = (number: number | string): APIButtonComponent => ({
+	type: ComponentType.Button,
+	style: ButtonStyle.Secondary,
+	custom_id: `calc${separator}${number}`,
 	label: number.toString(),
 	disabled: false,
 });
-const createActionButton = (label: string): ButtonComponentData => ({
-	type: EnumResolvers.resolveComponentType("BUTTON"),
-	style: EnumResolvers.resolveButtonStyle("DANGER") as ButtonStyle.Primary,
-	customId: `calc${separator}${label}`,
+const createActionButton = (label: string): APIButtonComponent => ({
+	type: ComponentType.Button,
+	style: ButtonStyle.Danger,
+	custom_id: `calc${separator}${label}`,
 	label,
 	disabled: false,
 });
-const createOperationButton = (label: string): ButtonComponentData => ({
-	type: EnumResolvers.resolveComponentType("BUTTON"),
-	style: EnumResolvers.resolveButtonStyle("PRIMARY") as ButtonStyle.Primary,
-	customId: `calc${separator}${label}`,
+const createOperationButton = (label: string): APIButtonComponent => ({
+	type: ComponentType.Button,
+	style: ButtonStyle.Primary,
+	custom_id: `calc${separator}${label}`,
 	label,
 	disabled: false,
 });
-const createFinalizeButton = (label: string): ButtonComponentData => ({
-	type: EnumResolvers.resolveComponentType("BUTTON"),
-	style: EnumResolvers.resolveButtonStyle("SUCCESS") as ButtonStyle.Primary,
-	customId: `calc${separator}${label}`,
+const createFinalizeButton = (label: string): APIButtonComponent => ({
+	type: ComponentType.Button,
+	style: ButtonStyle.Success,
+	custom_id: `calc${separator}${label}`,
 	label,
 	disabled: false,
 });
 
-const handleButtons = (content: string, buttons: ButtonComponentData[]) => {
+const handleButtons = (content: string, buttons: APIButtonComponent[]) => {
 	const lastChar = content.slice(-1);
 	const isMinus = lastChar === "-";
 
@@ -90,8 +88,7 @@ export const command: CommandOptions = {
 	async run(interaction) {
 		let content = "",
 			result = "";
-		const components: (ActionRowData &
-			Required<BaseComponentData> & { components: ButtonComponentData[] })[] = [
+		const components: APIActionRowComponent<APIButtonComponent>[] = [
 			{
 				type: 1,
 				components: [
@@ -163,9 +160,7 @@ export const command: CommandOptions = {
 						[interaction: ButtonInteraction]
 					>(
 						message.createMessageComponentCollector({
-							componentType: EnumResolvers.resolveComponentType(
-								"BUTTON"
-							) as ComponentType.Button,
+							componentType: ComponentType.Button,
 							filter: (collected) => {
 								if (collected.user.id === interaction.user.id) return true;
 								collected.deferUpdate().catch(CustomClient.printToStderr);

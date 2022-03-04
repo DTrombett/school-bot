@@ -194,12 +194,12 @@ export const translate = async (
 		page
 			.locator('div:text("Forse cercavi:") >> span')
 			.first()
-			.innerText({ timeout: 100 })
+			.innerText({ timeout: 1000 })
 			.catch(() => undefined),
 		page
 			.locator('div:text("Traduci da:") >> span')
 			.first()
-			.innerText({ timeout: 100 })
+			.innerText({ timeout: 1000 })
 			.then((text) => LanguageCode[text as keyof typeof LanguageCode])
 			.catch(() => undefined),
 	]);
