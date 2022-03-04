@@ -37,8 +37,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^1.4.0",
     "husky": "^7.0.4",
-    "tsup": "^5.11.13",
-    "typescript": "^4.6.2"
+    "tsup": "^5.11.13"
   },
   "dependencies": {
     "@discordjs/builders": "^0.13.0-dev.1646395406.6f7a366",
@@ -52,6 +51,7 @@
     "erlpack": "github:discord/erlpack",
     "playwright": "^1.19.2",
     "prettier": "^2.5.1",
+    "typescript": "^4.6.2",
     "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
   }

@@ -2,10 +2,12 @@ import {
 	bold,
 	codeBlock,
 	inlineCode,
+	Modal,
 	SlashCommandBuilder,
 	time,
 	TimestampStyles,
 } from "@discordjs/builders";
+import { ComponentType, TextInputStyle } from "discord-api-types/v9";
 import { Colors, Util } from "discord.js";
 import type { Buffer } from "node:buffer";
 import type { ChildProcess } from "node:child_process";
@@ -22,9 +24,8 @@ import {
 	stdout,
 	uptime,
 } from "node:process";
-import prettier from "prettier";
 import type { CommandOptions } from "../util";
-import { CustomClient, parseEval, restart } from "../util";
+import { CustomClient, restart } from "../util";
 
 enum SubCommands {
 	shell = "shell",
@@ -83,12 +84,6 @@ export const command: CommandOptions = {
 			evalCmd
 				.setName(SubCommands.evalCmd)
 				.setDescription("Esegue del codice")
-				.addStringOption((cmd) =>
-					cmd
-						.setName(SubCommandOptions.cmd)
-						.setDescription("Codice da eseguire")
-						.setRequired(true)
-				)
 				.addBooleanOption((ephemeral) =>
 					ephemeral
 						.setName(SubCommandOptions.ephemeral)
@@ -233,10 +228,14 @@ export const command: CommandOptions = {
 			test.setName(SubCommands.test).setDescription("Un comando di test")
 		),
 	async run(interaction) {
-		await interaction.deferReply({
-			ephemeral:
+		const ephemeral =
 				interaction.options.getBoolean(SubCommandOptions.ephemeral) ?? true,
-		});
+			subCommand = interaction.options.getSubcommand();
+
+		if (subCommand !== SubCommands.evalCmd)
+			await interaction.deferReply({
+				ephemeral,
+			});
 		const now = Date.now();
 		let botUptime: Date,
 			child: ChildProcess,
@@ -248,10 +247,9 @@ export const command: CommandOptions = {
 			logs: string[],
 			memory: NodeJS.MemoryUsage,
 			output: string,
-			processUptime: Date,
-			result: string;
+			processUptime: Date;
 
-		switch (interaction.options.getSubcommand()) {
+		switch (subCommand) {
 			case SubCommands.shell:
 				cmd = interaction.options.getString(SubCommandOptions.cmd, true);
 				child = exec(cmd);
@@ -284,46 +282,28 @@ export const command: CommandOptions = {
 				});
 				break;
 			case SubCommands.evalCmd:
-				code = interaction.options.getString(SubCommandOptions.cmd, true);
-				try {
-					code = prettier
-						.format(code, {
-							...((await prettier
-								.resolveConfig(".prettierrc.json")
-								.catch(() => null)) ?? {}),
-						})
-						.slice(0, -1);
-					result = await parseEval(code);
-				} catch (e) {
-					result = CustomClient.inspect(e);
-				}
-				void CustomClient.printToStdout(result);
-				await interaction.editReply({
-					content: `Eval elaborato in ${Date.now() - now}ms`,
-					embeds: [
-						{
-							author: {
-								name: interaction.user.tag,
-								iconURL: interaction.user.displayAvatarURL(),
+				await interaction.showModal(
+					new Modal({
+						title: "Eval",
+						custom_id: `eval-${ephemeral ? "eph" : ""}`,
+						components: [
+							{
+								type: ComponentType.ActionRow,
+								components: [
+									{
+										label: "TypeScript code",
+										style: TextInputStyle.Paragraph,
+										custom_id: "code",
+										type: ComponentType.TextInput,
+										required: true,
+										placeholder:
+											"The code to be formatted with Prettier and compiled by TypeScript...",
+									},
+								],
 							},
-							title: "Eval output",
-							description: codeBlock(
-								Util.escapeCodeBlock(result).slice(0, 4096 - 9)
-							),
-							color: Colors.Blurple,
-							timestamp: new Date().toISOString(),
-							fields: [
-								{
-									name: "Input",
-									value: codeBlock(
-										"js",
-										Util.escapeCodeBlock(code).slice(0, 1024 - 9)
-									),
-								},
-							],
-						},
-					],
-				});
+						],
+					})
+				);
 				break;
 			case SubCommands.ram:
 				memory = memoryUsage();
