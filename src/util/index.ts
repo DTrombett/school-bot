@@ -23,6 +23,8 @@ export * from "./occurrences";
 export * from "./playwright";
 export * from "./registro";
 export * from "./restart";
+export * from "./schemaError";
+export * from "./schemas";
 export * from "./startJob";
 export * from "./toLocaleString";
 export * from "./types";

@@ -25,7 +25,10 @@ export const parseDate = <T extends string | null | undefined>(
  * @param date - The date to format
  * @returns The formatted date
  */
-export const formatDate = (date: Date): string =>
-	`${String(date.getDate()).padStart(2, "0")}/${String(
-		date.getMonth() + 1
-	).padStart(2, "0")}/${date.getFullYear()}`;
+export const formatDate = (date: Date): string => {
+	if (date instanceof Date)
+		return `${String(date.getDate()).padStart(2, "0")}/${String(
+			date.getMonth() + 1
+		).padStart(2, "0")}/${date.getFullYear()}`;
+	throw new TypeError("Argument 'date' must be a Date object");
+};

@@ -44,6 +44,8 @@
     "@discordjs/rest": "^0.4.0-dev.1646395403.6f7a366",
     "@sapphire/async-queue": "^1.2.0",
     "@types/prettier": "^2.4.4",
+    "ajv": "^8.10.0",
+    "ajv-keywords": "^5.1.0",
     "bufferutil": "^4.0.6",
     "cron-parser": "^4.2.1",
     "discord-api-types": "*",

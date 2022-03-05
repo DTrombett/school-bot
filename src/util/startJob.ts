@@ -11,6 +11,10 @@ export const createJob = (
 	func: (parsed: CronExpression) => Awaitable<void>,
 	expression: string
 ) => {
+	if (typeof func !== "function")
+		throw new TypeError("Argument 'func' must be a function");
+	if (typeof expression !== "string")
+		throw new TypeError("Argument 'expression' must be a string");
 	const parsed = parser.parseExpression(expression);
 	const setNext = () =>
 		setTimeout(() => {

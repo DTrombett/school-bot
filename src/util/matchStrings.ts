@@ -12,6 +12,12 @@ export const matchStrings = (
 	needle: string,
 	caseSensitive = false
 ): MatchLevel => {
+	if (typeof haystack !== "string")
+		throw new TypeError("Argument 'haystack' must be a string");
+	if (typeof needle !== "string")
+		throw new TypeError("Argument 'needle' must be a string");
+	if (typeof caseSensitive !== "boolean")
+		throw new TypeError("Argument 'caseSensitive' must be a boolean");
 	haystack = haystack.trim().normalize();
 	needle = needle.trim().normalize();
 	if (!caseSensitive) {

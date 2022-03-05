@@ -1,7 +1,10 @@
 import type { RestEvents } from "@discordjs/rest";
 import type { Client, ClientEvents as DiscordEvents } from "discord.js";
-import type { CustomClient, EventOptions } from ".";
-import { EventType } from ".";
+import type { EventOptions } from ".";
+import CustomClient from "./CustomClient";
+import schemaError from "./schemaError";
+import { validateEventOptions, validatePartialEventOptions } from "./schemas";
+import { EventType } from "./types";
 
 /**
  * A class representing a client event
@@ -48,6 +51,10 @@ export class Event<
 	 * @param data - The data to use to create this event
 	 */
 	constructor(client: CustomClient, data: EventOptions<T, K>) {
+		if (!(client instanceof CustomClient))
+			throw new TypeError("'client' must be a CustomClient");
+		if (!validateEventOptions(data))
+			throw schemaError(validateEventOptions, "options", "EventOptions");
 		this.client = client;
 		this.name = data.name;
 		this.type = data.type;
@@ -59,6 +66,8 @@ export class Event<
 	 * @param data - The data to use to create this event
 	 */
 	patch(data: Partial<EventOptions<T, K>>) {
+		if (!validatePartialEventOptions(data))
+			throw schemaError(validatePartialEventOptions, "options", "EventOptions");
 		this.removeListeners();
 
 		if (data.on !== undefined)

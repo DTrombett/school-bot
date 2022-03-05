@@ -5,7 +5,12 @@
  * @param max - The maximum number
  * @returns A random integer between min and max
  */
-export const getRandomInt = (min: number, max: number): number =>
-	Math.floor(Math.random() * (max - min + 1)) + min;
+export const getRandomInt = (min: number, max: number): number => {
+	if (typeof min !== "number")
+		throw new TypeError("Argument 'min' must be a number");
+	if (typeof max !== "number")
+		throw new TypeError("Argument 'max' must be a number");
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 export default getRandomInt;

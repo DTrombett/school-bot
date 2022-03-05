@@ -1,11 +1,16 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import type {
+import {
 	AutocompleteInteraction,
 	ChatInputCommandInteraction,
 } from "discord.js";
 import { env } from "process";
 import type { CommandOptions } from ".";
 import CustomClient from "./CustomClient";
+import schemaError from "./schemaError";
+import {
+	validateCommandOptions,
+	validatePartialCommandOptions,
+} from "./schemas";
 
 /**
  * A class representing a Discord slash command
@@ -40,6 +45,10 @@ export class Command {
 	 * @param options - Options for this command
 	 */
 	constructor(client: CustomClient, options: CommandOptions) {
+		if (!(client instanceof CustomClient))
+			throw new TypeError("Argument 'client' must be a CustomClient");
+		if (!validateCommandOptions(options))
+			throw schemaError(validateCommandOptions, "options", "CommandOptions");
 		this.client = client;
 
 		this.patch(options);
@@ -52,6 +61,8 @@ export class Command {
 		return this.data.name;
 	}
 	set name(name) {
+		if (typeof name !== "string")
+			throw new TypeError("Property 'name' must be a string");
 		this.data.setName(name);
 	}
 
@@ -62,6 +73,8 @@ export class Command {
 		return this.data.description;
 	}
 	set description(description) {
+		if (typeof description !== "string")
+			throw new TypeError("Property 'description' must be a string");
 		this.data.setDescription(description);
 	}
 
@@ -70,6 +83,10 @@ export class Command {
 	 * @param interaction - The interaction received
 	 */
 	async autocomplete(interaction: AutocompleteInteraction) {
+		if (!(interaction instanceof AutocompleteInteraction))
+			throw new TypeError(
+				"Argument 'interaction' must be an AutocompleteInteraction"
+			);
 		try {
 			if (this.isPublic || interaction.user.id === env.OWNER_ID)
 				await this._autocomplete?.(interaction);
@@ -83,6 +100,12 @@ export class Command {
 	 * @param options - Options for this command
 	 */
 	patch(options: Partial<CommandOptions>) {
+		if (!validatePartialCommandOptions(options))
+			throw schemaError(
+				validatePartialCommandOptions,
+				"options",
+				"CommandOptions"
+			);
 		if (options.data !== undefined) this.data = options.data;
 		if (options.autocomplete !== undefined)
 			this._autocomplete = options.autocomplete.bind(this);
@@ -97,6 +120,10 @@ export class Command {
 	 * @param interaction - The interaction received
 	 */
 	async run(interaction: ChatInputCommandInteraction) {
+		if (!(interaction instanceof ChatInputCommandInteraction))
+			throw new TypeError(
+				"Argument 'interaction' must be an ChatInputCommandInteraction"
+			);
 		try {
 			if (this.isPublic || interaction.user.id === env.OWNER_ID)
 				await this._execute(interaction);

@@ -11,9 +11,11 @@ const MathIdentifiers = {
  * @returns The parsed result
  */
 // eslint-disable-next-line @typescript-eslint/require-await
-export const evaluateMathExpression = async (expression: string) =>
+export const evaluateMathExpression = async (expression: string) => {
+	if (typeof expression !== "string")
+		throw new TypeError("Argument 'expression' must be a string");
 	// eslint-disable-next-line no-useless-call
-	eval.call(
+	return eval.call(
 		null,
 		expression.replace(
 			// eslint-disable-next-line security/detect-non-literal-regexp
@@ -21,5 +23,6 @@ export const evaluateMathExpression = async (expression: string) =>
 			(match) => MathIdentifiers[match as keyof typeof MathIdentifiers]
 		)
 	) as number;
+};
 
 export default evaluateMathExpression;
