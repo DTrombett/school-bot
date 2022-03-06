@@ -11,6 +11,10 @@ export const lessonArguments = async (
 	date: Date | null | undefined,
 	subject: string | null | undefined
 ): RegistroMethod => {
+	if (date != null && !(date instanceof Date))
+		throw new TypeError(`Argument 'date' must be a nullable Date`);
+	if (subject != null && typeof subject !== "string")
+		throw new TypeError(`Argument 'subject' must be a nullable string`);
 	const expectDate = date != null;
 	const time = date?.getTime();
 	const expectSubject = subject != null;

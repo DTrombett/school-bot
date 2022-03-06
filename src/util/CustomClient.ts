@@ -12,7 +12,7 @@ import { createPage, loadCovidData, loadVaccinesData } from "./playwright";
 import { EventType } from "./types";
 
 /**
- * A custom class to interact with Clash Royale API and Discord
+ * A custom class to interact with Discord
  */
 export class CustomClient<T extends boolean = boolean> extends Client<T> {
 	/**

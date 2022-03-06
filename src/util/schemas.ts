@@ -2,7 +2,6 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import Ajv from "ajv";
 import ajvKeywords from "ajv-keywords";
 import instanceofDef from "ajv-keywords/dist/definitions/instanceof";
-import CustomClient from "./CustomClient";
 import type { CommandOptions, EventOptions } from "./types";
 
 export const schemas = {
@@ -36,11 +35,6 @@ export const ajv = new Ajv({
 	strictTuples: true,
 	strictRequired: true,
 	allErrors: true,
-	logger: {
-		error: CustomClient.printToStderr,
-		warn: CustomClient.printToStderr,
-		log: CustomClient.printToStdout,
-	},
 	removeAdditional: true,
 });
 ajvKeywords(ajv);

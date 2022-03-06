@@ -79,6 +79,10 @@ const loadTranslate = async () => {
  * @returns The page object
  */
 export const createPage = async (index = 0): Promise<[Page, AsyncQueue]> => {
+	if (typeof index !== "number" || index < 0)
+		throw new TypeError(
+			"Argument 'index' must be a number greater than or equal to 0"
+		);
 	// eslint-disable-next-line security/detect-object-injection
 	const queue = queues[index];
 
@@ -173,6 +177,12 @@ export const translate = async (
 	from: LanguageCode | "auto" = "auto",
 	to = LanguageCode["Italian"]
 ): Promise<TranslationResults> => {
+	if (typeof word !== "string")
+		throw new TypeError("Argument 'word' must be a string");
+	if (typeof from !== "string")
+		throw new TypeError("Argument 'from' must be a string");
+	if (typeof to !== "string")
+		throw new TypeError("Argument 'to' must be a string");
 	const existing = translations.find(
 		(t) => t.word === word && t.to === to && t.from === from
 	);
