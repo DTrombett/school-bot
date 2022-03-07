@@ -40,7 +40,7 @@
     "tsup": "^5.11.13"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.13.0-dev.1646395406.6f7a366",
+    "@discordjs/builders": "^0.13.0-dev.1646654924.b162f27",
     "@discordjs/rest": "^0.4.0-dev.1646395403.6f7a366",
     "@sapphire/async-queue": "^1.2.0",
     "@types/prettier": "^2.4.4",
