@@ -37,7 +37,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^1.4.0",
     "husky": "^7.0.4",
-    "tsup": "^5.12.2"
+    "tsup": "^5.12.5"
   },
   "dependencies": {
     "@discordjs/builders": "^0.13.0-dev.1646913825.dcd4797",
