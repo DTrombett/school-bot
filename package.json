@@ -33,11 +33,11 @@
     "@types/node-fetch": "^2.6.1",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^1.5.0",
     "husky": "^7.0.4",
-    "tsup": "^5.12.5"
+    "tsup": "^5.12.6"
   },
   "dependencies": {
     "@discordjs/builders": "^0.13.0-dev.1646913825.dcd4797",
