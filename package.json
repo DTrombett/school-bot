@@ -47,7 +47,7 @@
     "ajv": "^8.11.0",
     "ajv-keywords": "^5.1.0",
     "bufferutil": "^4.0.6",
-    "cron-parser": "^4.3.0",
+    "cron-parser": "^4.4.0",
     "discord-api-types": "*",
     "discord.js": "^14.0.0-dev.1646914074.dcd4797",
     "erlpack": "github:discord/erlpack",
