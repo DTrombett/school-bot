@@ -49,7 +49,7 @@
     "bufferutil": "^4.0.6",
     "cron-parser": "^4.4.0",
     "discord-api-types": "*",
-    "discord.js": "^14.0.0-dev.1646914074.dcd4797",
+    "discord.js": "^14.0.0-dev.1655899441-a3799f9",
     "erlpack": "github:discord/erlpack",
     "playwright": "^1.21.1",
     "prettier": "^2.6.2",
