@@ -53,7 +53,7 @@
     "erlpack": "github:discord/erlpack",
     "playwright": "^1.21.1",
     "prettier": "^2.6.2",
-    "typescript": "^4.6.4",
+    "typescript": "^4.8.2",
     "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"
   }
